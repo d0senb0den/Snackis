@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SnackisWebApp.Gateway;
+using SnackisWebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +12,25 @@ namespace SnackisWebApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly CategoryGateway _categoryGateway;
+        private readonly SubCategoryGateway _subCategoryGateway;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public List<Category> Categories { get; set; }
+        public List<SubCategory> SubCategories { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public Guid SelectedSubCategoryId { get; set; }
+
+        public IndexModel(CategoryGateway categoryGateway, SubCategoryGateway subCategoryGateway)
         {
-            _logger = logger;
+            _categoryGateway = categoryGateway;
+            _subCategoryGateway = subCategoryGateway;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-
+            Categories = await _categoryGateway.GetCategories();
+            SubCategories = await _subCategoryGateway.GetSubCategories();
         }
     }
 }

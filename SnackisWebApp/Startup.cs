@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SnackisWebApp.Areas.Identity.Data;
 using SnackisWebApp.Data;
+using SnackisWebApp.Gateway;
+using SnackisWebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,14 +29,32 @@ namespace SnackisWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<CategoryGateway>();
+            services.AddHttpClient<SubCategoryGateway>();
+            services.AddHttpClient<PostGateway>();
+            services.AddHttpClient<CommentGateway>();
+            services.AddHttpClient<MessageGateway>();
+            services.AddHttpClient<ReportGateway>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MustBeUser",
+                    policy => policy.RequireRole("User"));
+                options.AddPolicy("MustBeAdmin",
+                    policy => policy.RequireRole("Admin"));
+            });
+
+            services.AddRazorPages(options => 
+            {
+                options.Conventions.AuthorizeFolder("/Admin", "MustBeAdmin");
+            });
+
             services.AddDbContext<SnackisWebAppContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("SnackisWebAppContextConnection")));
 
             services.AddIdentity<SnackisUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<SnackisWebAppContext>();
-
-            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
