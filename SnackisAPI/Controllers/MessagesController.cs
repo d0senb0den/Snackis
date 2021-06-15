@@ -42,6 +42,14 @@ namespace SnackisAPI.Controllers
             return message;
         }
 
+        // GET: api/Messages/UserId/12345
+        [HttpGet("UserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<Message>>> GetMessagesByUserId(Guid userId)
+        {
+
+            return await _context.Messages.Where(m => m.ToUser == userId).ToListAsync();
+        }
+
         // PUT: api/Messages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -78,6 +86,7 @@ namespace SnackisAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Message>> PostMessage(Message message)
         {
+            message.SentAt = DateTime.Now;
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 

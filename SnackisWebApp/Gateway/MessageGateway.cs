@@ -29,17 +29,26 @@ namespace SnackisWebApp.Gateway
             return await _httpClient.GetFromJsonAsync<List<Message>>(_configuration["SnackisAPI"] + "/Messages");
         }
 
-        public async Task<Message> PostMessages(Message message)
+        public async Task<List<Message>> GetMessagesByUserIdAsync(string id)
+        {
+            return await _httpClient.GetFromJsonAsync<List<Message>>(_configuration["SnackisAPI"] + "/Messages/UserId/" + id);
+        }
+
+        public async Task<bool> PostMessages(Message message)
         {
             var response = await _httpClient.PostAsJsonAsync(_configuration["SnackisAPI"] + "/Messages", message);
-            Message returnValue = await response.Content.ReadFromJsonAsync<Message>();
-            return returnValue;
+            return response.IsSuccessStatusCode;
         }
         public async Task<Message> DeleteMessages(Guid deleteId)
         {
             var response = await _httpClient.DeleteAsync(_configuration["SnackisAPI"] + "/Messages/" + deleteId);
             Message returnValue = await response.Content.ReadFromJsonAsync<Message>();
             return returnValue;
+        }
+        public async Task<bool> DeleteMessage(Guid deleteId)
+        {
+            var response = await _httpClient.DeleteAsync(_configuration["SnackisAPI"] + "/Messages/" + deleteId);
+            return response.IsSuccessStatusCode;
         }
 
         public async Task PutMessages(Guid editId, Message message)

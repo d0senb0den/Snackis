@@ -1,10 +1,47 @@
 ﻿@page
+
+@using Microsoft.AspNetCore.Identity
+@using SnackisWebApp.Areas.Identity.Data
+
+@inject SignInManager<SnackisUser> SignInManager
+@inject UserManager<SnackisUser> UserManager
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Välkommen @Model.User.Identity.Name</h1>
 
+@*@Model.Categories.FirstOrDefault(c => c.ID == subCategory.CategoryID).Name*@
+
+
+<div class="container" style="width:800px">
+    <div class="btn-group-vertical">
+
+        @foreach (var category in Model.Categories)
+        {
+            <button type="button" class="btn btn-secondary">@category.Name</button>
+            @foreach (var subCategory in Model.SubCategories)
+            {
+                if (category.ID == subCategory.CategoryID)
+                {
+                    <div style="width:800px">
+                        <ol class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto text-left">
+                                    <div class="fw-bold">
+                                        <a style="text-decoration: none" asp-page="PostsView" asp-route-SubCategoryId="@subCategory.ID">@subCategory.Name</a>
+                                    </div>
+                                    @subCategory.Description
+                                </div>
+                                <span style="color: white" class="badge bg-secondary rounded-pill">
+                                    @Model.Posts.Where(p => p.SubCategoryID == subCategory.ID).ToList().Count
+                                </span>
+                        </ol>
+                    </div>
+                }
+            }
+        }
+    </div>
 </div>
+

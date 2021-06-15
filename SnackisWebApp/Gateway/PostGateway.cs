@@ -28,18 +28,20 @@ namespace SnackisWebApp.Gateway
 
             return await _httpClient.GetFromJsonAsync<List<Post>>(_configuration["SnackisAPI"] + "/Posts");
         }
+        public async Task<Post> GetPost(Guid postId)
+        {
+            return await _httpClient.GetFromJsonAsync<Post>(_configuration["SnackisAPI"] + "/Posts/" + postId);
+        }
 
-        public async Task<Post> PostPosts(Post post)
+        public async Task<bool> PostPosts(Post post)
         {
             var response = await _httpClient.PostAsJsonAsync(_configuration["SnackisAPI"] + "/Posts", post);
-            Post returnValue = await response.Content.ReadFromJsonAsync<Post>();
-            return returnValue;
+            return response.IsSuccessStatusCode;
         }
-        public async Task<Post> DeletePosts(Guid deleteId)
+        public async Task<bool> DeletePosts(Guid deleteId)
         {
             var response = await _httpClient.DeleteAsync(_configuration["SnackisAPI"] + "/Posts/" + deleteId);
-            Post returnValue = await response.Content.ReadFromJsonAsync<Post>();
-            return returnValue;
+            return response.IsSuccessStatusCode;
         }
 
         public async Task PutPosts(Guid editId, Post post)

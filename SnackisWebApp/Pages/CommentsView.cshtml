@@ -1,0 +1,182 @@
+﻿@page
+
+@using Microsoft.AspNetCore.Identity
+@using SnackisWebApp.Areas.Identity.Data
+
+@inject SignInManager<SnackisUser> SignInManager
+@inject UserManager<SnackisUser> UserManager
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@model SnackisWebApp.Pages.CommentsViewModel
+@{
+}
+
+
+<div class="container justify-content-center" style="display:flex;">
+
+    <br />
+    <div class="text-center" style="width:800px">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a style="text-decoration: none" asp-page="Index">Kategorier</a></li>
+                <li class="breadcrumb-item"><a style="text-decoration: none" asp-page="PostsView" asp-route-SubCategoryId="@Model.SubCategory.ID">@Model.SubCategory.Name</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Post.Name</li>
+            </ol>
+        </nav>
+        <div class="card mb-3" style="max-width: 800px; background-color:#C7E0ED">
+            <div class="row g-0">
+                <div class="col-1 mt-1">
+
+                    <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateReportModal" data-bs-postId="@Model.Post.ID"><i class="fa fa-exclamation-circle text-right" style="color:#FBEE70; font-size:20px;"></i></button>
+                </div>
+                <div class="col-3 mt-4 mb-4">
+                    @if (Model.CreatedByUser.ProfilePicture != null)
+                    {
+                        <img class="shadow-sm" style="width:100px;height:100px; object-fit:cover; border-radius:10px" src="data:image/*;base64,@(Convert.ToBase64String(Model.CreatedByUser.ProfilePicture))">
+                        <br />
+                        <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@Model.Post.User"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
+                        <small class="text-muted">@Model.CreatedByUser.UserName</small>
+                    }
+                </div>
+                <div class="col-8">
+                    <div class="card-body mt-2">
+                        <h5 class="card-title">@Model.Post.Name</h5>
+                        <p class="card-text">@Model.Post.Content</p>
+                        <p class="card-text"><small class="text-muted">@Model.Post.CreatedAt</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        @foreach (var comment in Model.Comments)
+        {
+            if (Model.Post.ID == comment.PostID)
+            {
+                <div class="card mb-3" style="width: 800px; background-color:#DCE5EA">
+                    <div class="row g-0">
+                        <div class="col-1 mt-1">
+                            <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateReportModal" data-bs-commentId="@comment.ID"><i class="fa fa-exclamation-circle text-right" style="color:#FBEE70; font-size:20px;"></i></button>
+                        </div>
+                        <div class="col-3 mt-4 mb-4">
+                            @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                            {
+                                <img class="shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px " src="data:image/*;base64,@(Convert.ToBase64String(comment.User.ProfilePicture))">
+                                <br />
+                                <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@comment.User.Id"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
+                                <small class="text-muted">@comment.User.UserName</small>
+
+                            }
+                        </div>
+                        <div class="col-8 align-self-center mb-1">
+                            <div class="card-body mt-2">
+                                <p class="card-text">@comment.Content</p>
+                                <p class="card-text"><small class="text-muted">@comment.CreatedAt</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <br />
+        <div class="text-center">
+            <form method="post">
+                <input style="width:500px;" asp-for="NewOrChangedComment.Content" placeholder="Kommentar" />
+                <input type="hidden" asp-for="NewOrChangedComment.PostID" value="@Model.PostId" />
+                <input type="hidden" asp-for="NewOrChangedComment.UserID" value="@Model.MyUser.Id" />
+                <input type="submit" style="background-color: transparent" value="Skapa kommentar" />
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@*-----------------Modal report----------------*@
+<div class="modal fade" id="CreateReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Report">
+                <div class="modal-header">
+                    <div class="modal-body">
+                        <h5 class="modal-title" id="exampleModalLabel">Anmälan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Meddelande:</label>
+                        <textarea class="form-control" asp-for="ReportInput.Content"></textarea>
+                        <input type="hidden" asp-for="ReportInput.ByUser" value="@Model.MyUser.Id" />
+                        <input id="PostInput" type="hidden" asp-for="ReportInput.Post" />
+                        <input id="CommentInput" type="hidden" asp-for="ReportInput.Comment" />
+                        <input type="hidden" asp-for="PostId" value="@Model.PostId" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+                    <button type="submit" class="btn btn-primary">Rapportera</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*-----------------Modal message----------------*@
+<div class="modal fade" id="CreateMessageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Message">
+                <div class="modal-header">
+                    <div class="modal-body">
+                        <h5 class="modal-title" id="exampleModalLabel">Meddelande</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Innehåll:</label>
+                        <textarea class="form-control" asp-for="NewMessage.Content"></textarea>
+                        <input type="hidden" asp-for="NewMessage.FromUser" value="@Model.MyUser.Id" />
+                        <input id="ToUser" type="hidden" asp-for="NewMessage.ToUser" />
+                        <input type="hidden" asp-for="PostId" value="@Model.PostId" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+                    <button type="submit" class="btn btn-primary">Skicka</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var CreateReportModal = document.getElementById('CreateReportModal')
+    CreateReportModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        var reportPostId = button.getAttribute('data-bs-postId')
+        var reportCommentId = button.getAttribute('data-bs-commentId')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+        //
+        // Update the modal's content.
+        var PostInput = CreateReportModal.querySelector('#PostInput')
+        var CommentInput = CreateReportModal.querySelector('#CommentInput')
+
+        PostInput.value = reportPostId
+        CommentInput.value = reportCommentId
+    })
+
+    var CreateMessageModal = document.getElementById('CreateMessageModal')
+    CreateMessageModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        var messageUserId = button.getAttribute('data-bs-messageUserId')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+        //
+        // Update the modal's content.
+        var ToUser = CreateMessageModal.querySelector('#ToUser')
+
+        ToUser.value = messageUserId
+    })
+</script>

@@ -35,11 +35,10 @@ namespace SnackisWebApp.Gateway
             Comment returnValue = await response.Content.ReadFromJsonAsync<Comment>();
             return returnValue;
         }
-        public async Task<Comment> DeleteComments(Guid deleteId)
+        public async Task<bool> DeleteComments(Guid deleteId)
         {
             var response = await _httpClient.DeleteAsync(_configuration["SnackisAPI"] + "/Comments/" + deleteId);
-            Comment returnValue = await response.Content.ReadFromJsonAsync<Comment>();
-            return returnValue;
+            return response.IsSuccessStatusCode;
         }
 
         public async Task PutComments(Guid editId, Comment comment)
