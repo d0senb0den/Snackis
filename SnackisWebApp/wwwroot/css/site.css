@@ -69,3 +69,22 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+/*------Custom--------*/
+
+CustomBackgroundColor {
+    background-color: #BBE1FA !important
+}
+
+CustomHeaderColor {
+    background-color: #1B262C !important
+}
+
+CustomTextColor {
+    color: #BBE1FA !important
+}
+
+CustomContentColor {
+    background-color: #0F4C75 !important
+}

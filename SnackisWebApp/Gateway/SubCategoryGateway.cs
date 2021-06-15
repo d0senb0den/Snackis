@@ -29,6 +29,11 @@ namespace SnackisWebApp.Gateway
             return await _httpClient.GetFromJsonAsync<List<SubCategory>>(_configuration["SnackisAPI"] + "/SubCategories");
         }
 
+        public async Task<SubCategory> GetSubCategory(Guid subCategoryId)
+        {
+            return await _httpClient.GetFromJsonAsync<SubCategory>(_configuration["SnackisAPI"] + "/SubCategories/" + subCategoryId);
+        }
+
         public async Task<SubCategory> PostSubCategories(SubCategory subCategory)
         {
             var response = await _httpClient.PostAsJsonAsync(_configuration["SnackisAPI"] + "/SubCategories", subCategory);

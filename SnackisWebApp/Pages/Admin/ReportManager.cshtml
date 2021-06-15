@@ -1,0 +1,75 @@
+﻿@page
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+@model SnackisWebApp.Pages.Admin.ReportManagerModel
+@{
+}
+<div class="container" style="width:800px">
+    @if (Model.Reports.Count > 0)
+    {
+        @foreach (var report in Model.Reports)
+        {
+            <div class="row card rounded mb-3">
+                <div class="card-body rounded" style="background-color:lightblue">
+                    <div class="row">
+                        @foreach (var comment in Model.Comments)
+                        {
+                            if (comment.ID == report.Comment)
+                            {
+                                <div class="col-11">
+                                    <strong>Rapporterad kommentar:</strong>
+                                    <p>@comment.Content</p>
+                                    <p>@comment.CreatedAt</p>
+                                </div>
+                                <div class="col-1">
+                                    <form method="post" asp-page-handler="DeleteComment">
+                                        <input type="hidden" asp-for="@Model.DeleteCommentId" value="@report.Comment" />
+                                        <button type="submit" class="border-0 bg-transparent"><i class="fa fa-trash text-right" style="color:red; font-size:20px;"></i></button>
+                                    </form>
+                                </div>
+                            }
+                        }
+                        @foreach (var post in Model.Posts)
+                        {
+                            if (post.ID == report.Post)
+                            {
+                                <div class="col-11">
+                                    <strong>Rapporterad post:</strong>
+                                    <p>@post.Name</p>
+                                    <p>@post.Content</p>
+                                    <p>@post.CreatedAt</p>
+                                </div>
+                                <div class="col-1">
+                                    <form method="post" asp-page-handler="DeletePost">
+                                        <input type="hidden" asp-for="@Model.DeletePostId" value="@report.Post" />
+                                        <button type="submit" class="border-0 bg-transparent"><i class="fa fa-trash text-right" style="color:red; font-size:20px;"></i></button>
+                                    </form>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-11">
+                            <p>@report.Content</p>
+                            <p>@report.CreatedAt</p>
+                        </div>
+                        <div class="col-1">
+                            <form method="post" asp-page-handler="DeleteReport">
+                                <input type="hidden" asp-for="@Model.DeleteReportId" value="@report.ID" />
+                                <button type="submit" class="border-0 bg-transparent"><i class="fa fa-trash text-right" style="color:red; font-size:20px;"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h3 class="text-center">Finns inga anmälningar att visa.</h3>
+    }
+</div>

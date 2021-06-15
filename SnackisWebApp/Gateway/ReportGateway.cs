@@ -29,18 +29,19 @@ namespace SnackisWebApp.Gateway
             return await _httpClient.GetFromJsonAsync<List<Report>>(_configuration["SnackisAPI"] + "/Reports");
         }
 
-        public async Task<Report> PostReports(Report report)
+        public async Task<bool> PostReports(Report report)
         {
             var response = await _httpClient.PostAsJsonAsync(_configuration["SnackisAPI"] + "/Reports", report);
-            Report returnValue = await response.Content.ReadFromJsonAsync<Report>();
-            return returnValue;
+            /*Report returnValue = await response.Content.ReadFromJsonAsync<Report>();
+            return returnValue;*/
+            return response.IsSuccessStatusCode;
         }
-        public async Task<Report> DeleteReports(Guid deleteId)
+        public async Task<bool> DeleteReports(Guid deleteId)
         {
             var response = await _httpClient.DeleteAsync(_configuration["SnackisAPI"] + "/Reports/" + deleteId);
-            Report returnValue = await response.Content.ReadFromJsonAsync<Report>();
-            return returnValue;
+            return response.IsSuccessStatusCode;
         }
+
 
         public async Task PutReports(Guid editId, Report report)
         {

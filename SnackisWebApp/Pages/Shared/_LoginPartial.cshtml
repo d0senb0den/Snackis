@@ -4,6 +4,8 @@
 @inject SignInManager<SnackisUser> SignInManager
 @inject UserManager<SnackisUser> UserManager
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
@@ -16,6 +18,9 @@
         <li class="nav-item">
             <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-page="/MessageView"><i class="fa fa-comments"></i></a>
+        </li>
         @if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin"))
         {
             <li class="nav-item">
@@ -23,6 +28,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-page="/Admin/UserRoleManager">Roles</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-page="/Admin/ReportManager">Report</a>
             </li>
         }
         <li class="nav-item">
