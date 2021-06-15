@@ -2,47 +2,49 @@
 @model SnackisWebApp.Pages.Admin.AdminIndexModel
 @{
 }
-<div class="row justify-content-center">
-    <form method="post">
-        <input asp-for="NewOrChangedCategory.Name" placeholder="Namn" />
-        <input style="background-color: transparent" type="submit" value="Skapa en ny kategori" />
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <form method="post">
+            <input asp-for="NewOrChangedCategory.Name" placeholder="Namn" />
+            <input style="background-color: transparent" type="submit" value="Skapa en ny kategori" />
+        </form>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+        <form method="post" asp-page-handler="SubCreate">
+            <input asp-for="NewOrChangedSubCategory.Name" placeholder="Namn" />
+            <input asp-for="NewOrChangedSubCategory.Description" placeholder="Beskrivning" />
+            <select asp-for="NewOrChangedSubCategory.CategoryID" asp-items="Model.SelectList"></select>
+            <input style="background-color: transparent" type="submit" value="Skapa en ny underkategori" />
+        </form>
+    </div>
+
+    <hr />
+
+    <br />
+    <h4>Kategorier:</h4>
+    <br />
+
+    @foreach (var category in Model.Categories)
+    {
+        <form method="post" asp-page-handler="Delete">
+            <label>@category.Name</label>
+            <input type="hidden" asp-for="DeleteCategoryId" value="@category.ID" />
+            <input style="background-color:transparent" class="ml-3" type="submit" value="Ta bort" />
+        </form>
+    }
+    <br />
+    <hr />
+    <br />
+    <h4>Underkategorier:</h4>
+    <br />
+    @foreach (var subCategory in Model.SubCategories)
+    {
+        <form method="post" asp-page-handler="Delete">
+            <label>@subCategory.Name</label>
+            <label>, Tillhör kategori: @Model.Categories.FirstOrDefault(c => c.ID == subCategory.CategoryID).Name</label>
+            <input type="hidden" asp-for="DeleteSubCategoryId" value="@subCategory.ID" />
+            <input style="background-color:transparent" class="ml-3" type="submit" value="Ta bort" />
+        </form>
+    }
 </div>
-<br />
-<div class="row justify-content-center">
-    <form method="post" asp-page-handler="SubCreate">
-        <input asp-for="NewOrChangedSubCategory.Name" placeholder="Namn"/>
-        <input asp-for="NewOrChangedSubCategory.Description" placeholder="Beskrivning"/>
-        <select asp-for="NewOrChangedSubCategory.CategoryID" asp-items="Model.SelectList"></select>
-        <input style="background-color: transparent" type="submit" value="Skapa en ny underkategori" />
-    </form>
-</div>
-
-<hr />
-
-<br />
-<h4>Kategorier:</h4>
-<br />
-
-@foreach (var category in Model.Categories)
-{
-    <form method="post" asp-page-handler="Delete">
-        <label>@category.Name</label>
-        <input type="hidden" asp-for="DeleteCategoryId" value="@category.ID" />
-        <input style="background-color:transparent" class="ml-3" type="submit" value="Ta bort" />
-    </form>
-}
-<br />
-<hr />
-<br />
-<h4>Underkategorier:</h4>
-<br />
-@foreach (var subCategory in Model.SubCategories)
-{
-<form method="post" asp-page-handler="Delete">
-    <label>@subCategory.Name</label>
-    <label>, Tillhör kategori: @Model.Categories.FirstOrDefault(c => c.ID == subCategory.CategoryID).Name</label>
-    <input type="hidden" asp-for="DeleteSubCategoryId" value="@subCategory.ID" />
-    <input style="background-color:transparent" class="ml-3" type="submit" value="Ta bort" />
-</form>
-}
