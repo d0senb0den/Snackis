@@ -73,18 +73,18 @@ body {
 
 /*------Custom--------*/
 
-CustomBackgroundColor {
+.CustomBackgroundColor {
     background-color: #BBE1FA !important
 }
 
-CustomHeaderColor {
+.CustomHeaderColor {
     background-color: #1B262C !important
 }
 
-CustomTextColor {
+.CustomTextColor {
     color: #BBE1FA !important
 }
 
-CustomContentColor {
+.CustomContentColor {
     background-color: #0F4C75 !important
 }
