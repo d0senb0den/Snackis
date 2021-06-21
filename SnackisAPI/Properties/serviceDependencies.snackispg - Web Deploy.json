@@ -5,6 +5,12 @@
       "type": "mssql.azure",
       "connectionId": "SnackisAPIContext",
       "secretStore": "AzureAppSettings"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "SnackisContext",
+      "suggestion": "true",
+      "ignored": "true"
     }
   }
 }

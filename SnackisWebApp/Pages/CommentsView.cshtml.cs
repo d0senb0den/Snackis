@@ -20,7 +20,7 @@ namespace SnackisWebApp.Pages
         private readonly ReportGateway _reportGateway;
         private readonly MessageGateway _messageGateway;
 
-        public SnackisUser MyUser { get; set; }
+        public string MyUserId { get; set; }
         public SubCategory SubCategory { get; set; }
         public List<PresentationComment> Comments { get; set; } = new();
         public Post Post { get; set; }
@@ -60,7 +60,7 @@ namespace SnackisWebApp.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            MyUser = await _userManager.GetUserAsync(User);
+            MyUserId = _userManager.GetUserId(User);
             Post = await _postGateway.GetPost(PostId);
             if (PostId == Guid.Empty)
             {
