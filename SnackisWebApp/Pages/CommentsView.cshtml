@@ -13,33 +13,50 @@
 }
 
 
-<div class="container justify-content-center" style="display:flex;">
+<div class="container justify-content-center mt-5" style="display:flex;">
 
     <br />
-    <div class="text-center" style="width:800px">
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a style="text-decoration: none" asp-page="Index">Kategorier</a></li>
-                <li class="breadcrumb-item"><a style="text-decoration: none" asp-page="PostsView" asp-route-SubCategoryId="@Model.SubCategory.ID">@Model.SubCategory.Name</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@Model.Post.Name</li>
-            </ol>
-        </nav>
-        <div class="card mb-3" style="max-width: 800px; background-color:#C7E0ED">
+    <div style="width:800px">
+        <div class="text-center">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a style="text-decoration: none" asp-page="Index">Kategorier</a></li>
+                    <li class="breadcrumb-item"><a style="text-decoration: none" asp-page="PostsView" asp-route-SubCategoryId="@Model.SubCategory.ID">@Model.SubCategory.Name</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Post.Name</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="card mb-3 shadow-sm" style="max-width: 800px; background-color:#C7E0ED">
             <div class="row g-0">
                 <div class="col-1 mt-1">
-
-                    <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateReportModal" data-bs-postId="@Model.Post.ID"><i class="fa fa-exclamation-circle text-right" style="color:#FBEE70; font-size:20px;"></i></button>
-                </div>
-                <div class="col-3 mt-4 mb-4">
+                    @if (Model.MyUserId != null)
+                    {
+                        <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateReportModal" data-bs-postId="@Model.Post.ID"><i class="fa fa-exclamation-circle text-right" style="color:#FBEE70; font-size:20px;"></i></button>
+                    }
+                            </div>
+                <div class="col-3 mt-4 mb-4 text-center">
                     @if (Model.CreatedByUser.ProfilePicture != null)
                     {
                         <img class="shadow-sm" style="width:100px;height:100px; object-fit:cover; border-radius:10px" src="data:image/*;base64,@(Convert.ToBase64String(Model.CreatedByUser.ProfilePicture))">
                         <br />
+                        @if (Model.MyUserId != null)
+                        {
+                            <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@Model.Post.User"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
+                        }
+                        <small class="text-muted text-center">@Model.CreatedByUser.UserName</small>
+                    }
+                    else
+                    {
+                        <i style="font-size: 100px;" class="fa fa-user text-muted"></i>
+                        <br />
+                    @if (Model.MyUserId != null)
+                    {
                         <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@Model.Post.User"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
-                        <small class="text-muted">@Model.CreatedByUser.UserName</small>
+                    }
+                    <small class="text-muted text-center">@Model.CreatedByUser.UserName</small>
                     }
                 </div>
-                <div class="col-8">
+                <div class="col-8 text-center">
                     <div class="card-body mt-2">
                         <h5 class="card-title">@Model.Post.Name</h5>
                         <p class="card-text">@Model.Post.Content</p>
@@ -53,40 +70,67 @@
         {
             if (Model.Post.ID == comment.PostID)
             {
-                <div class="card mb-3" style="width: 800px; background-color:#DCE5EA">
-                    <div class="row g-0">
-                        <div class="col-1 mt-1">
-                            <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateReportModal" data-bs-commentId="@comment.ID"><i class="fa fa-exclamation-circle text-right" style="color:#FBEE70; font-size:20px;"></i></button>
-                        </div>
-                        <div class="col-3 mt-4 mb-4">
-                            @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+        <div class="card mb-3 shadow-sm" style="width: 800px; background-color:#DCE5EA">
+            <div class="row g-0">
+                <div class="col-1 mt-1">
+                    @if (Model.MyUserId != null)
+                    {
+                        <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateReportModal" data-bs-commentId="@comment.ID"><i class="fa fa-exclamation-circle text-right" style="color:#FBEE70; font-size:20px;"></i></button>
+                    }
+                </div>
+                <div class="col-3 mt-4 mb-4 text-center">
+                    @if (comment.User.ProfilePicture != null)
                             {
-                                <img class="shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px " src="data:image/*;base64,@(Convert.ToBase64String(comment.User.ProfilePicture))">
-                                <br />
-                                <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@comment.User.Id"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
-                                <small class="text-muted">@comment.User.UserName</small>
+                    <img class="shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px " src="data:image/*;base64,@(Convert.ToBase64String(comment.User.ProfilePicture))">
+                    <br />
+                    @if (Model.MyUserId != null)
+                    {
+                    <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@comment.User.Id"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
+                    }
+                    <small class="text-muted">@comment.User.UserName</small>
 
                             }
-                        </div>
-                        <div class="col-8 align-self-center mb-1">
-                            <div class="card-body mt-2">
-                                <p class="card-text">@comment.Content</p>
-                                <p class="card-text"><small class="text-muted">@comment.CreatedAt</small></p>
-                            </div>
-                        </div>
+                            else
+                            {
+                    <i style="font-size: 100px;" class="fa fa-user text-muted"></i>
+                    <br />
+                    @if (Model.MyUserId != null)
+                    {
+                        <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CreateMessageModal" data-bs-messageUserId="@comment.User.Id"><i class="fa fa-comment text-right" style="color:white; font-size:20px;"></i></button>
+                    }
+                        <small class="text-muted">@comment.User.UserName</small>
+                            }
+                </div>
+                <div class="col-8 align-self-center mb-1 text-center">
+                    <div class="card-body mt-2">
+                        <p class="card-text">@comment.Content</p>
+                        <p class="card-text"><small class="text-muted">@comment.CreatedAt</small></p>
                     </div>
                 </div>
+            </div>
+        </div>
             }
         }
         <br />
-        <div class="text-center">
-            <form method="post">
-                <input style="width:500px;" asp-for="NewOrChangedComment.Content" placeholder="Kommentar" />
-                <input type="hidden" asp-for="NewOrChangedComment.PostID" value="@Model.PostId" />
-                <input type="hidden" asp-for="NewOrChangedComment.UserID" value="@Model.MyUser.Id" />
-                <input type="submit" style="background-color: transparent" value="Skapa kommentar" />
-            </form>
-        </div>
+        @if (Model.MyUserId != null)
+        {
+            <div class="text-center">
+                <form method="post">
+                    <input style="width:500px;" asp-for="NewOrChangedComment.Content" placeholder="Kommentar" />
+                    <input type="hidden" asp-for="NewOrChangedComment.PostID" value="@Model.PostId" />
+                    <input type="hidden" asp-for="NewOrChangedComment.UserID" value="@Model.MyUserId" />
+                    <input type="submit" style="background-color: transparent" value="Skapa kommentar" />
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="container" style="width:600px">
+                <div class="text-center mb-5 mt-5">
+                    <p class="text-muted display-6">Logga in eller registrera dig om du inte har ett konto.</p>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
@@ -96,19 +140,17 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-page-handler="Report">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="modal-header">
-                    <div class="modal-body">
-                        <h5 class="modal-title" id="exampleModalLabel">Anmälan</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Meddelande:</label>
-                        <textarea class="form-control" asp-for="ReportInput.Content"></textarea>
-                        <input type="hidden" asp-for="ReportInput.ByUser" value="@Model.MyUser.Id" />
-                        <input id="PostInput" type="hidden" asp-for="ReportInput.Post" />
-                        <input id="CommentInput" type="hidden" asp-for="ReportInput.Comment" />
-                        <input type="hidden" asp-for="PostId" value="@Model.PostId" />
-                    </div>
+                    <h5 class="modal-title" id="exampleModalLabel">Anmälan</h5>
+                </div>
+                <div class="modal-body">
+                    <label for="message-text" class="col-form-label">Anledning:</label>
+                    <textarea class="form-control" asp-for="ReportInput.Content"></textarea>
+                    <input type="hidden" asp-for="ReportInput.ByUser" value="@Model.MyUserId" />
+                    <input id="PostInput" type="hidden" asp-for="ReportInput.Post" />
+                    <input id="CommentInput" type="hidden" asp-for="ReportInput.Comment" />
+                    <input type="hidden" asp-for="PostId" value="@Model.PostId" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
@@ -124,18 +166,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-page-handler="Message">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="modal-header">
-                    <div class="modal-body">
-                        <h5 class="modal-title" id="exampleModalLabel">Meddelande</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Innehåll:</label>
-                        <textarea class="form-control" asp-for="NewMessage.Content"></textarea>
-                        <input type="hidden" asp-for="NewMessage.FromUser" value="@Model.MyUser.Id" />
-                        <input id="ToUser" type="hidden" asp-for="NewMessage.ToUser" />
-                        <input type="hidden" asp-for="PostId" value="@Model.PostId" />
-                    </div>
+                    <h5 class="modal-title" id="exampleModalLabel">Meddelande</h5>
+                </div>
+                <div class="modal-body">
+                    <label for="message-text" class="col-form-label">Innehåll:</label>
+                    <textarea class="form-control" asp-for="NewMessage.Content"></textarea>
+                    <input type="hidden" asp-for="NewMessage.FromUser" value="@Model.MyUserId" />
+                    <input id="ToUser" type="hidden" asp-for="NewMessage.ToUser" />
+                    <input type="hidden" asp-for="PostId" value="@Model.PostId" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>

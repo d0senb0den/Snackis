@@ -61,7 +61,9 @@ namespace SnackisWebApp
                         Configuration.GetConnectionString("SnackisWebAppContextConnection")));
 
             services.AddIdentity<SnackisUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<SnackisWebAppContext>();
+                .AddEntityFrameworkStores<SnackisWebAppContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

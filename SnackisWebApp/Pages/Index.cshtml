@@ -16,8 +16,10 @@
 
 
 <div class="container" style="width:800px">
+    <div class="text-center mb-5 mt-5">
+    <p class="text-muted display-4">Välkommen till Snackis!</p>
+    </div>
     <div class="btn-group-vertical">
-
         @foreach (var category in Model.Categories)
         {
             <button type="button" class="btn btn-secondary">@category.Name</button>
